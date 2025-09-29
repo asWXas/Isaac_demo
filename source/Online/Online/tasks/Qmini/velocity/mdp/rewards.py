@@ -54,3 +54,5 @@ def feet_air_time_positive_biped(
     # no reward for zero command
     reward *= torch.norm(env.command_manager.get_command(command_name)[:, :2], dim=1) > 0.1
     return reward
+
+
