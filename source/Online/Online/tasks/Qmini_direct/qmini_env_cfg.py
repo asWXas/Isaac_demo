@@ -19,10 +19,37 @@ from Online.Robot.Qmini import QMINI_CFG
 from isaaclab.terrains.config.rough import ROUGH_TERRAINS_CFG  # isort: skip
 
 #   my self-defined config class
-from mdp_direct import *
+
 
 @configclass
-class QminiDirectEnvCfg(DirectRLEnvCfg):
+class EventCfg:
+    """Configuration for randomization."""
+
+    physics_material = EventTerm(
+        func=mdp.randomize_rigid_body_material,
+        mode="startup",
+        params={
+            "asset_cfg": SceneEntityCfg("robot", body_names=".*"),
+            "static_friction_range": (0.8, 0.8),
+            "dynamic_friction_range": (0.6, 0.6),
+            "restitution_range": (0.0, 0.0),
+            "num_buckets": 64,
+        },
+    )
+
+    add_base_mass = EventTerm(
+        func=mdp.randomize_rigid_body_mass,
+        mode="startup",
+        params={
+            "asset_cfg": SceneEntityCfg("robot", body_names="base_link"),
+            "mass_distribution_params": (-5.0, 5.0),
+            "operation": "add",
+        },
+    )
+
+
+@configclass
+class QminiFlatEnvCfg(DirectRLEnvCfg):
     """
     配置类,用于定义Qmini环境的配置。
     继承自DirectRLEnvCfg,包含环境的各种参数设置。
@@ -62,7 +89,7 @@ class QminiDirectEnvCfg(DirectRLEnvCfg):
     )
     
     # scene
-    scene: InteractiveSceneCfg = InteractiveSceneCfg(num_envs=4096, env_spacing=4.0, replicate_physics=True)
+    scene: InteractiveSceneCfg = InteractiveSceneCfg(num_envs=20, env_spacing=4.0, replicate_physics=True)
     
     # events
     events: EventCfg = EventCfg()
@@ -75,6 +102,8 @@ class QminiDirectEnvCfg(DirectRLEnvCfg):
     contact_sensor: ContactSensorCfg = ContactSensorCfg(
         prim_path="/World/envs/env_.*/Robot/.*", history_length=3, update_period=0.005, track_air_time=True
     )
+    
+    force_sensor: RayCasterCfg = None
     
     # light
     light = AssetBaseCfg(

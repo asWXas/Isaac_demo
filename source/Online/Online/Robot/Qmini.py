@@ -23,7 +23,7 @@ from isaaclab.sensors import RayCasterCfg
 
 QMINI_CFG = ArticulationCfg(
     spawn=sim_utils.UsdFileCfg(
-        usd_path=f"/home/wx/WS/IsaacLabExtensionTemplate/source/Online/Asset/Robot/Qmini/Qmini.usd",
+        usd_path=f"/home/wx/WS/IsaacLabExtensionTemplate/source/Asset/Qmini/Qmini.usd",
         activate_contact_sensors=True,
         rigid_props=sim_utils.RigidBodyPropertiesCfg(
             disable_gravity=False,
