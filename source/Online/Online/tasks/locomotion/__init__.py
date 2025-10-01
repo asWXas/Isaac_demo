@@ -1,3 +1,4 @@
 """Locomotion environments for legged robots."""
 
-from .velocity import *  # noqa
+from .anymal_d import *  # noqa
+from .Qmini import *  # noqa
