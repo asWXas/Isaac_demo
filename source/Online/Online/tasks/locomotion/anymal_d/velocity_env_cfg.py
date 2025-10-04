@@ -19,7 +19,7 @@ from isaaclab.terrains import TerrainImporterCfg
 from isaaclab.utils import configclass
 from isaaclab.utils.noise import AdditiveUniformNoiseCfg as Unoise
 
-import Online.tasks.locomotion.velocity.mdp as mdp
+import Online.tasks.locomotion.anymal_d.mdp as mdp
 
 ##
 # Pre-defined configs
@@ -37,23 +37,39 @@ class MySceneCfg(InteractiveSceneCfg):
     """Configuration for the terrain scene with a legged robot."""
 
     # ground terrain
+    # terrain = TerrainImporterCfg(
+    #     prim_path="/World/ground",
+    #     terrain_type="generator",
+    #     terrain_generator=ROUGH_TERRAINS_CFG,
+    #     max_init_terrain_level=5,
+    #     collision_group=-1,
+    #     physics_material=sim_utils.RigidBodyMaterialCfg(
+    #         friction_combine_mode="multiply",
+    #         restitution_combine_mode="multiply",
+    #         static_friction=1.0,
+    #         dynamic_friction=1.0,
+    #     ),
+    #     visual_material=sim_utils.MdlFileCfg(
+    #         mdl_path="{NVIDIA_NUCLEUS_DIR}/Materials/Base/Architecture/Shingles_01.mdl",
+    #         project_uvw=True,
+    #     ),
+    #     debug_vis=False,
+    # )
     terrain = TerrainImporterCfg(
-        prim_path="/World/ground",
-        terrain_type="generator",
-        terrain_generator=ROUGH_TERRAINS_CFG,
-        max_init_terrain_level=5,
-        collision_group=-1,
+        # 你可以保持这个路径，或者改成更符合你地形的名字
+        prim_path="/World/my_anymal_terrain", 
+
+        # 类型依然是 "usd"
+        terrain_type="usd",
+
+        # 关键一步：将你的路径填入这里
+        usd_path="/home/wx/WS/IsaacLabExtensionTemplate/source/Online/Online/tasks/locomotion/anymal_d/mdp/Xform_01.usd",
+
+        # 其他参数可以根据需要进行调整
         physics_material=sim_utils.RigidBodyMaterialCfg(
-            friction_combine_mode="multiply",
-            restitution_combine_mode="multiply",
             static_friction=1.0,
-            dynamic_friction=1.0,
-        ),
-        visual_material=sim_utils.MdlFileCfg(
-            mdl_path="{NVIDIA_NUCLEUS_DIR}/Materials/Base/Architecture/Shingles_01.mdl",
-            project_uvw=True,
-        ),
-        debug_vis=False,
+            dynamic_friction=1.0
+        )
     )
     # robots
     robot: ArticulationCfg = MISSING

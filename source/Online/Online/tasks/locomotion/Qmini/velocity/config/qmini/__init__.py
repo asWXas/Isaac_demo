@@ -7,7 +7,7 @@ from . import agents, flat_env_cfg, rough_env_cfg
 ##
 
 gym.register(
-    id="Flat-Qmini-v0",
+    id="Template-Isaac-Velocity-Flat-Qmini-v0",
     entry_point="isaaclab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
@@ -18,7 +18,7 @@ gym.register(
 
 
 gym.register(
-    id="Rough-Qmini-v0",
+    id="Template-Isaac-Velocity-Rough-Qmini-v0",
     entry_point="isaaclab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
