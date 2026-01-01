@@ -35,14 +35,15 @@ class QminiRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
                 "yaw": (0.0, 0.0),
             },
         }
-        self.events.base_com = None
+        # self.events.base_com = None
         
     
     ########################################  observations ##########################################
-        self.observations.policy = None
-        self.observations.critic = None
+        # self.observations.policy = None
+        # self.observations.critic = None
     
     #######################################  actions #############################################
+        # self.actions.joint_pos.scale = 0.25
     
     #######################################  commands ############################################
     

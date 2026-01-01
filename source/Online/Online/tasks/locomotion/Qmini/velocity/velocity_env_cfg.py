@@ -105,7 +105,7 @@ class CommandsCfg:
 class ActionsCfg:
     """Action specifications for the MDP."""
 
-    joint_pos = mdp.JointPositionActionCfg(asset_name="robot", joint_names=[".*"], scale=0.5, use_default_offset=True)
+    joint_pos = mdp.JointPositionActionCfg(asset_name="robot", joint_names=[".*"], scale=0.25, use_default_offset=True)
 
 
 @configclass
@@ -117,8 +117,9 @@ class ObservationsCfg:
         """Observations for policy group."""
 
         # observation terms (order preserved)
-        base_lin_vel = ObsTerm(func=mdp.base_lin_vel, noise=Unoise(n_min=-0.1, n_max=0.1))
+        # base_lin_vel = ObsTerm(func=mdp.base_lin_vel, noise=Unoise(n_min=-0.1, n_max=0.1))
         base_ang_vel = ObsTerm(func=mdp.base_ang_vel, noise=Unoise(n_min=-0.2, n_max=0.2))
+        
         projected_gravity = ObsTerm(
             func=mdp.projected_gravity,
             noise=Unoise(n_min=-0.05, n_max=0.05),
@@ -129,21 +130,22 @@ class ObservationsCfg:
         joint_pos = ObsTerm(
             func=mdp.joint_pos_rel, 
             noise=Unoise(n_min=-0.01, n_max=0.01),
-            history_length=3 
+            clip=(-100.0, 100.0),
         )
         
         # MODIFIED: Added history_length to observe past joint velocities
         joint_vel = ObsTerm(
             func=mdp.joint_vel_rel, 
+            clip=(-100.0, 100.0),
             noise=Unoise(n_min=-1.5, n_max=1.5),
-            history_length=3
         )
 
         # MODIFIED: Added history_length to observe past actions
-        actions = ObsTerm(func=mdp.last_action, history_length=2)
+        actions = ObsTerm(func=mdp.last_action)
 
         def __post_init__(self):
             """Post-initialization checks."""
+            self.history_length = 3
             self.enable_corruption = True
             self.concatenate_terms = True
 
@@ -169,7 +171,7 @@ class ObservationsCfg:
 
         def __post_init__(self):
             """Post-initialization checks."""
-            # Corruption is disabled for the critic's state-value estimation.
+            self.history_length = 3
             self.enable_corruption = False
             self.concatenate_terms = True
 
@@ -201,8 +203,17 @@ class EventCfg:
         mode="startup",
         params={
             "asset_cfg": SceneEntityCfg("robot", body_names="base"),
-            "mass_distribution_params": (-5.0, 5.0),
+            "mass_distribution_params": (-1.0, 1.0),
             "operation": "add",
+        },
+    )
+
+    base_com = EventTerm(
+        func=mdp.randomize_rigid_body_com,
+        mode="startup",
+        params={
+            "asset_cfg": SceneEntityCfg("robot", body_names="base"),
+            "com_range": {"x": (-0.05, 0.05), "y": (-0.05, 0.05), "z": (-0.01, 0.01)},
         },
     )
 
